@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<div class="container mt-4 main-container">
+  <div class="row">
+    <div class="col-md-12">
+      {% include 'partials/_messages.html' %}
+    </div>
+  </div>
+  
+    <div class="row">
+      <div class="col-md-10">
+      </div>
+      <div class="col-md-2">
+        {% if perms.stocks.add_stock %}
+          <a href="{% url 'add-stock'%}" class="btn btn-primary">Add Stock</a>
+        {% endif %}
+      </div>
+    </div>
+    
+    {% if perms.stocks.view_stock %}
+      {% for stock in page_obj%}
+        <button class="accordion mt-3">{{stock.id}}</button>
+        <div class="panel">
+          <div class="app-table">
+            <table class="table table-stripped table-hover">
+              <thead>
+                <tr>
+                  <th>Stock ID</th>
+                  <th>Stock Name</th>
+                  <!-- <th>User</th> -->
+                  <th></th>
+                  <th></th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td>{{stock.id}}</td>
+                  <td>{{stock.name}}</td>
+                  <!-- <td>{{stock.owner}}</td> -->
+                  {% if perms.stocks.change_stock %}
+                    <td>
+                      <a href="{% url 'edit-stock' stock.id  %}" title="Edit">
+                        <i class="fa fa-edit" style="font-size:25px"></i>
+                      </a>
+                    </td>
+                  {% endif %}
+                  {% if perms.stocks.delete_stock %}
+                  <td>
+                    <a href="{% url 'delete-stock' stock.id  %}" title="Delete">
+                      <i class="fa fa-trash" style="font-size:25px"></i>
+                    </a>
+                  </td>
+                  {% endif %}
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      {% endfor %}
+
+      {% include 'partials/_pagination.html' %}
+    {% else %}
+      No permission on Stocks!
+    {% endif %}
+</div>
+{% endblock content %}

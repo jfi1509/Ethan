@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4 main-container">
+  <div class="row">
+    <div class="col-md-12">
+      {% include 'partials/_messages.html' %}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-10">
+    </div>
+    <div class="col-md-2">
+      {% if perms.transactions.add_transaction %}
+        <a href="{% url 'add-transaction'%}" class="btn btn-primary">Add Transaction</a>
+      {% endif %}
+  </div>
+  </div>
+  {% if perms.transactions.view_transaction %}
+    {% for transaction in page_obj%}
+      <button class="accordion mt-3">{{transaction.id}}</button>
+      <div class="panel">
+        <div class="app-table">
+          <table class="table table-stripped table-hover">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Stock name</th>
+                <th>Stock Price</th>
+                <th>Stock Quantity</th>
+                <!-- <th>User</th> -->
+                <th></th>
+                <th></th>
+              </tr>
+            </thead>
+      
+            <tbody>
+              <tr>
+                <td>{{transaction.date}}</td>
+                <td>{{transaction.stock_name}}</td>
+                <td>{{transaction.stock_price}}</td>
+                <td>{{transaction.stock_quantity}}</td>
+                <!-- <td>{{transaction.owner}}</td> -->
+                {% if perms.transactions.change_transaction %}
+                <td>
+                  <a href="{% url 'edit-transaction' transaction.id  %}" title="Edit">
+                    <i class="fa fa-edit" style="font-size:25px"></i>
+                  </a>
+                </td>
+                {% endif %}
+                {% if perms.transactions.delete_transaction %}
+                <td>
+                  <a href="{% url 'delete-transaction' transaction.id  %}" title="Delete">
+                    <i class="fa fa-trash" style="font-size:25px"></i>
+                  </a>
+                </td>
+                {% endif %}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    {% endfor %}
+    
+    {% include 'partials/_pagination.html' %}
+  {% else %}
+      No permission on transactions!
+  {% endif %}
+  
+</div>
+{% endblock content %}
