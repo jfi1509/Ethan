@@ -37,3 +37,4 @@ class Stock(ExternalBase):
 
         verbose_name = 'Stock'
         verbose_name_plural = 'Stocks'
+        ordering = ['-updated_at']

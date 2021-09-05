@@ -23,7 +23,7 @@
     
     {% if perms.stocks.view_stock %}
       {% for stock in page_obj%}
-        <button class="accordion mt-3">{{stock.id}}</button>
+        <button class="accordion mt-3">{{stock.name}}</button>
         <div class="panel">
           <div class="app-table">
             <table class="table table-stripped table-hover">

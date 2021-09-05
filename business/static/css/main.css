@@ -68,3 +68,22 @@
   margin: 0 auto;
   max-width: 500px;
 }
+
+a.save-button,
+input.save-button {
+  margin-top: 10px;
+}
+
+p.delete-text {
+  margin: 0 auto;
+}
+
+a.go-back {
+  margin-left: 125px;
+}
+
+.pagination-text {
+  margin-top: 20px;
+  margin-bottom: 15px;
+  display: inline-block;
+}

@@ -8,5 +8,5 @@ urlpatterns = [
     path('transactions', views.index, name="transactions"),
     path('add-transaction', views.add_transaction, name="add-transaction"),
     path('edit-transaction/<int:id>', views.edit_transaction, name="edit-transaction"),
-    path('transaction-delete/<int:id>', views.delete_transaction, name="delete-transaction"),
+    path('delete-transaction/<int:id>', views.delete_transaction, name="delete-transaction"),
 ]

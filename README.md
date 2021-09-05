@@ -1,11 +1,11 @@
-# Stock Transaction Website
+# Ethan.AI Assignment
 
 ## Setup
 
 build and up containers
 
 ```
-docker-compose up
+docker-compose up -d --build
 ```
 
 run migrations

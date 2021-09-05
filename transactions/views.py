@@ -146,7 +146,7 @@ def edit_transaction(request, id):
 
             transaction.save()
 
-            messages.success(request, 'Transaction updated successfully')
+            messages.success(request, f'{transaction_id } updated successfully')
             return redirect('transactions')
     except Exception as e:
         messages.error(request, f'Something went wrong while editing transaction : {e}')
@@ -157,9 +157,13 @@ def edit_transaction(request, id):
 def delete_transaction(request, id):
     try:
         transaction = Transaction.objects.get(pk=id)
-        transaction.delete()
-        messages.success(request, 'Transaction Deleted')
+        if request.method == 'POST':
+            transaction.delete()
+            messages.success(request, 'Transaction Deleted')
+            return redirect('transactions')
+
+        return render(request, 'partials/_delete_item.html', {'item' : transaction})
     except Exception as e:
         messages.error(request, f'Something went wrong while deleting transaction : {e}')
-    finally:
         return redirect('transactions')
+

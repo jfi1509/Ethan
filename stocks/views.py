@@ -90,7 +90,7 @@ def edit_stock(request, id):
             stock.owner = user
 
             stock.save()
-            messages.success(request, 'Stock updated  successfully')
+            messages.success(request, f'{stock_name} updated  successfully')
             return redirect('stocks')
     except Exception as e:
         messages.error(request, f'Something went wrong while editing stock : {e}')
@@ -100,11 +100,12 @@ def edit_stock(request, id):
 def delete_stock(request, id):
     try:
         stock = Stock.objects.get(pk=id)
-        stock.delete()
-        messages.success(request, 'Stock Delete')
+        if request.method == 'POST':
+            stock.delete()
+            messages.success(request, 'Stock Deleted')
+            return redirect('stocks')
+
+        return render(request, 'partials/_delete_item.html', {'item' : stock})
     except Exception as e:
         messages.error(request, f'Something went wrong while deleting stock : {e}')
-    finally:
         return redirect('stocks')
-
-    
