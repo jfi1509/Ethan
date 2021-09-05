@@ -15,14 +15,31 @@
       <div class="col-md-10">
       </div>
       <div class="col-md-2">
+        <!-- If user has add permission -->
         {% if perms.stocks.add_stock %}
           <a href="{% url 'add-stock'%}" class="btn btn-primary">Add Stock</a>
         {% endif %}
       </div>
     </div>
-    
+    <!-- If user has view permission -->
     {% if perms.stocks.view_stock %}
       {% for stock in page_obj%}
+        <div class="update-delete-fn">
+          <!-- If user has change permission -->
+          {% if perms.stocks.change_stock %}
+            <a href="{% url 'edit-stock' stock.id  %}" title="Edit">
+              <i class="fa fa-edit" style="font-size:25px"></i>
+            </a>
+          {% endif %}
+          
+          <!-- If user has delete permission -->
+          {% if perms.stocks.delete_stock %}
+            <a href="{% url 'delete-stock' stock.id  %}" title="Delete">
+              <i class="fa fa-trash" style="font-size:25px"></i>
+            </a>
+          {% endif %}
+        </div>
+
         <button class="accordion mt-3">{{stock.name}}</button>
         <div class="panel">
           <div class="app-table">
@@ -31,9 +48,6 @@
                 <tr>
                   <th>Stock ID</th>
                   <th>Stock Name</th>
-                  <!-- <th>User</th> -->
-                  <th></th>
-                  <th></th>
                 </tr>
               </thead>
 
@@ -41,21 +55,6 @@
                 <tr>
                   <td>{{stock.id}}</td>
                   <td>{{stock.name}}</td>
-                  <!-- <td>{{stock.owner}}</td> -->
-                  {% if perms.stocks.change_stock %}
-                    <td>
-                      <a href="{% url 'edit-stock' stock.id  %}" title="Edit">
-                        <i class="fa fa-edit" style="font-size:25px"></i>
-                      </a>
-                    </td>
-                  {% endif %}
-                  {% if perms.stocks.delete_stock %}
-                  <td>
-                    <a href="{% url 'delete-stock' stock.id  %}" title="Delete">
-                      <i class="fa fa-trash" style="font-size:25px"></i>
-                    </a>
-                  </td>
-                  {% endif %}
                 </tr>
               </tbody>
             </table>

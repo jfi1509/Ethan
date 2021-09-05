@@ -20,6 +20,22 @@
   </div>
   {% if perms.transactions.view_transaction %}
     {% for transaction in page_obj%}
+      <div class="update-delete-fn">
+        <!-- If user has change permission -->
+        {% if perms.transactions.change_transaction %}
+          <a href="{% url 'edit-transaction' transaction.id  %}" title="Edit">
+            <i class="fa fa-edit" style="font-size:25px"></i>
+          </a>
+        {% endif %}
+        
+        <!-- If user has delete permission -->
+        {% if perms.transactions.delete_transaction %}
+          <a href="{% url 'delete-transaction' transaction.id  %}" title="Delete">
+            <i class="fa fa-trash" style="font-size:25px"></i>
+          </a>
+        {% endif %}
+      </div>
+
       <button class="accordion mt-3">{{transaction.id}}</button>
       <div class="panel">
         <div class="app-table">
@@ -30,9 +46,6 @@
                 <th>Stock name</th>
                 <th>Stock Price</th>
                 <th>Stock Quantity</th>
-                <!-- <th>User</th> -->
-                <th></th>
-                <th></th>
               </tr>
             </thead>
       
@@ -42,21 +55,6 @@
                 <td>{{transaction.stock_name}}</td>
                 <td>{{transaction.stock_price}}</td>
                 <td>{{transaction.stock_quantity}}</td>
-                <!-- <td>{{transaction.owner}}</td> -->
-                {% if perms.transactions.change_transaction %}
-                <td>
-                  <a href="{% url 'edit-transaction' transaction.id  %}" title="Edit">
-                    <i class="fa fa-edit" style="font-size:25px"></i>
-                  </a>
-                </td>
-                {% endif %}
-                {% if perms.transactions.delete_transaction %}
-                <td>
-                  <a href="{% url 'delete-transaction' transaction.id  %}" title="Delete">
-                    <i class="fa fa-trash" style="font-size:25px"></i>
-                  </a>
-                </td>
-                {% endif %}
               </tr>
             </tbody>
           </table>

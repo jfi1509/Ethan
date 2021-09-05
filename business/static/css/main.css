@@ -87,3 +87,9 @@ a.go-back {
   margin-bottom: 15px;
   display: inline-block;
 }
+
+.update-delete-fn {
+  position: absolute;
+  margin-left: 66%;
+  margin-top: 35px;
+}
