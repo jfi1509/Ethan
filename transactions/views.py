@@ -10,6 +10,7 @@ from stocks.models import Stock
 
 @login_required(login_url='/authentication/login')
 def dashboard(request):
+    # redirecting to transactions page
     return redirect('transactions')
 
 
@@ -17,11 +18,13 @@ def dashboard(request):
 def index(request):
     user = request.user
 
+    # Show all if the user is superuser
     if(user.is_superuser):
         transactions = Transaction.objects.all()
     else:
         transactions = Transaction.objects.filter(owner=user)
 
+    # Pagination
     paginator = Paginator(transactions, 10)
     page_number = request.GET.get('page')
     page_obj = Paginator.get_page(paginator, page_number)
@@ -44,9 +47,12 @@ def add_transaction(request):
             'values': request.POST,
             'stocks': stocks
         }
+
+        # Handling GET request
         if request.method == 'GET':
             return render(request, 'transactions/add_transaction.html', context)
 
+        # Handling POST request
         if request.method == 'POST':
             post_data = request.POST
             stock_name = post_data['stock_name']
@@ -55,6 +61,7 @@ def add_transaction(request):
             transaction_date = post_data['transaction_date']
             transaction_id = post_data['transaction_id']
 
+            # Check for completeness of the form
             if not transaction_date:
                 error_msg = 'Date is required'
 
@@ -72,7 +79,8 @@ def add_transaction(request):
                 return render(request, 'transactions/add_transaction.html', context)
 
             stock = stocks.filter(name__iexact = stock_name).first()
-        
+
+            # Creating the transaction and saving it to DB
             try:
                 Transaction.objects.create( 
                     id=transaction_id,
@@ -84,14 +92,17 @@ def add_transaction(request):
                     owner=request.user
                 )
             except IntegrityError as e:
+                # This is raised when the values dont follow the DB model constraints
                 messages.error(request, 'Invalid Input, Try again!')
                 return render(request, 'transactions/add_transaction.html', context)
             except DataError as de:
+                # This is raised when the values do not follow limit ranges
                 messages.error(request, 'ID should less than or equal to 20 characters')
                 return render(request, 'transactions/add_transaction.html', context)
 
             messages.success(request, 'Transaction saved successfully')
 
+            # Redirecting to the transactions page
             return redirect('transactions')
 
     except Exception as e:
@@ -111,9 +122,11 @@ def edit_transaction(request, id):
         }
 
         if request.method == 'GET':
+            # render the edit page on GET call
             return render(request, 'transactions/edit_transaction.html', context)
 
         if request.method == 'POST':
+            # pulling data from POST request
             post_data = request.POST
             stock_name = post_data['stock_name']
             stock_price = post_data['stock_price']
@@ -121,6 +134,7 @@ def edit_transaction(request, id):
             transaction_date = post_data['transaction_date']
             transaction_id = post_data['transaction_id']
 
+            # check for completeness of the form
             if not transaction_date:
                 error_msg = 'Date is required'
 
@@ -130,12 +144,15 @@ def edit_transaction(request, id):
             if not stock_price:
                 error_msg = 'Price is required'
             
+            # handling the error messages with proper logging
             if error_msg != '':
                 messages.error(request, error_msg)
                 return render(request, 'transactions/edit_transaction.html', context)
 
+            # for Stock ID
             stock = stocks.filter(name__iexact = stock_name).first()
 
+            # adding the changed values
             transaction.id = transaction_id
             transaction.date = transaction_date
             transaction.stock_id = stock
@@ -144,6 +161,7 @@ def edit_transaction(request, id):
             transaction.stock_quantity = stock_quantity
             transaction.owner = request.user
 
+            # Saving the transaction
             transaction.save()
 
             messages.success(request, f'{transaction_id } updated successfully')
@@ -156,10 +174,15 @@ def edit_transaction(request, id):
 
 def delete_transaction(request, id):
     try:
+        # Pulling particular transaction from the DB
         transaction = Transaction.objects.get(pk=id)
+        # Handling POST request
         if request.method == 'POST':
+            # deleting the transaction
             transaction.delete()
+            # Showing deleted message to the user
             messages.success(request, 'Transaction Deleted')
+            # Redirecting to the transactions page
             return redirect('transactions')
 
         return render(request, 'partials/_delete_item.html', {'item' : transaction})
